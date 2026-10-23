@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PortfolioHUB</title>
+  <link rel="stylesheet" href="src/assets/style.css">
+</head>
+<body>
+
+  <header>
+    <h1>PortfolioHUB</h1>
+    <p>Plataforma de Projetos & Portfólios Digitais | Bootcamp I - CEUB</p>
+  </header>
+
+  <main class="container">
+    <h2>Meus Repositórios no GitHub</h2>
+    <div id="projects-container" class="projects-grid">
+      <p>Carregando projetos...</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 PortfolioHUB - Desenvolvido com suporte da IA GEMINI</p>
+  </footer>
+
+  <!-- Conecta o serviço JS de busca de projetos -->
+  <script type="module">
+    import { fetchRepositories } from './src/services/githubService.js';
+
+    async function renderProjects() {
+      const container = document.getElementById('projects-container');
+      const repos = await fetchRepositories();
+
+      if (!repos || repos.length === 0) {
+        container.innerHTML = '<p>Nenhum repositório público encontrado ou limite da API excedido.</p>';
+        return;
+      }
+
+      container.innerHTML = repos.map(repo => `
+        <div class="card">
+          <h3>${repo.name}</h3>
+          <p>${repo.description || 'Sem descrição cadastrada.'}</p>
+          <div class="card-footer">
+            <span><strong>Linguagem:</strong> ${repo.language || 'N/A'}</span>
+            <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">Ver no GitHub →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderProjects();
+  </script>
+</body>
+</html>
